@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH1064 - Interactive Review Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .progress-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .topic {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .topic:last-child {
+            border-bottom: none;
+        }
+
+        .topic-header {
+            padding: 20px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .topic-header:hover {
+            background: #e9ecef;
+        }
+
+        .topic-header.completed {
+            background: #d4edda;
+        }
+
+        .topic-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topic-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .topic-header.active .topic-icon {
+            transform: rotate(90deg);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .topic-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 30px;
+        }
+
+        .topic-content.active {
+            max-height: 10000px;
+            padding: 30px;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+        }
+
+        .subsection h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .subsection h4 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .example {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .theorem {
+            background: #d1ecf1;
+            padding: 15px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .proof {
+            background: #d4edda;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .quiz-btn {
+            background: #28a745;
+            margin-top: 20px;
+        }
+
+        .quiz-btn:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .topic-content.active {
+                padding: 20px 15px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 MATH1064 Interactive Review</h1>
+            <p class="subtitle">Advanced Discrete Mathematics Study Guide</p>
+        </header>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search topics, formulas, theorems...">
+            <button class="btn btn-primary" onclick="expandAll()">Expand All</button>
+            <button class="btn btn-secondary" onclick="collapseAll()">Collapse All</button>
+            <button class="btn btn-secondary" onclick="resetProgress()">Reset Progress</button>
+        </div>
+
+        <div class="progress-container">
+            <h3 style="margin-bottom: 10px;">Your Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <div class="content" id="content">
+
+            <!-- Topic 1: Set Theory -->
+            <div class="topic" data-topic="1">
+                <div class="topic-header" onclick="toggleTopic(1)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>1. Advanced Set Theory</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(1)">
+                </div>
+                <div class="topic-content" id="topic-1">
+                    <div class="subsection">
+                        <h3>Set Operations and Properties</h3>
+                        <p><strong>Definition:</strong> A set is a well-defined collection of distinct objects.</p>
+                        
+                        <h4>Key Operations:</h4>
+                        <div class="formula">
+                            • Union: A ∪ B = {x : x ∈ A ∨ x ∈ B}<br>
+                            • Intersection: A ∩ B = {x : x ∈ A ∧ x ∈ B}<br>
+                            • Difference: A \ B = {x : x ∈ A ∧ x ∉ B}<br>
+                            • Complement: A' = U \ A<br>
+                            • Symmetric Difference: A △ B = (A \ B) ∪ (B \ A)
+                        </div>
+
+                        <div class="theorem">
+                            <strong>De Morgan's Laws:</strong><br>
+                            1. (A ∪ B)' = A' ∩ B'<br>
+                            2. (A ∩ B)' = A' ∪ B'
+                        </div>
+
+                        <div class="proof">
+                            <strong>Proof Strategy:</strong> Use double containment<br>
+                            (⊆) Show x ∈ LHS implies x ∈ RHS<br>
+                            (⊇) Show x ∈ RHS implies x ∈ LHS
+                        </div>
+
+                        <h4>Power Sets and Cardinality</h4>
+                        <div class="formula">
+                            Power Set: P(A) = {S : S ⊆ A}<br>
+                            If |A| = n, then |P(A)| = 2^n
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 2: Functions -->
+            <div class="topic" data-topic="2">
+                <div class="topic-header" onclick="toggleTopic(2)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>2. Functions, Relations, and Sequences</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(2)">
+                </div>
+                <div class="topic-content" id="topic-2">
+                    <div class="subsection">
+                        <h3>Function Classification</h3>
+                        
+                        <div class="theorem">
+                            <strong>Injective (One-to-One):</strong> ∀x₁, x₂ ∈ X, f(x₁) = f(x₂) ⟹ x₁ = x₂<br>
+                            <em>Each output has at most one input</em>
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Surjective (Onto):</strong> ∀y ∈ Y, ∃x ∈ X such that f(x) = y<br>
+                            <em>Every element in codomain is hit</em>
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Bijective:</strong> Both injective and surjective<br>
+                            <em>Perfect one-to-one correspondence</em>
+                        </div>
+
+                        <div class="example">
+                            <strong>Example:</strong> To prove f is injective:<br>
+                            1. Assume f(x₁) = f(x₂)<br>
+                            2. Show x₁ = x₂
+                        </div>
+
+                        <h4>Sequences</h4>
+                        <div class="formula">
+                            Arithmetic: aₙ = a₁ + (n-1)d<br>
+                            Sum: Sₙ = n(a₁ + aₙ)/2<br><br>
+                            Geometric: aₙ = a₁ · rⁿ⁻¹<br>
+                            Sum: Sₙ = a₁(1 - rⁿ)/(1 - r)<br>
+                            Infinite (|r| < 1): S = a₁/(1 - r)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 3: Number Theory -->
+            <div class="topic" data-topic="3">
+                <div class="topic-header" onclick="toggleTopic(3)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>3. Number Theory: Divisibility and Primes</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(3)">
+                </div>
+                <div class="topic-content" id="topic-3">
+                    <div class="subsection">
+                        <h3>Divisibility</h3>
+                        <div class="formula">
+                            a | b means ∃k ∈ ℤ such that b = ak
+                        </div>
+
+                        <h4>Properties:</h4>
+                        <ul>
+                            <li>a | b and b | c ⟹ a | c (transitivity)</li>
+                            <li>a | b and a | c ⟹ a | (bx + cy)</li>
+                            <li>a | b and b | a ⟹ a = ±b</li>
+                        </ul>
+
+                        <h3>Modular Arithmetic</h3>
+                        <div class="formula">
+                            a ≡ b (mod m) if m | (a - b)
+                        </div>
+
+                        <div class="example">
+                            <strong>Properties:</strong><br>
+                            If a ≡ b (mod m) and c ≡ d (mod m), then:<br>
+                            • a + c ≡ b + d (mod m)<br>
+                            • ac ≡ bd (mod m)<br>
+                            • aⁿ ≡ bⁿ (mod m)
+                        </div>
+
+                        <h3>GCD and Euclidean Algorithm</h3>
+                        <div class="formula">
+                            gcd(a, b) · lcm(a, b) = |ab|
+                        </div>
+
+                        <div class="example">
+                            <strong>Example:</strong> gcd(252, 105)<br>
+                            252 = 105 · 2 + 42<br>
+                            105 = 42 · 2 + 21<br>
+                            42 = 21 · 2 + 0<br>
+                            Therefore, gcd(252, 105) = 21
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 4: Combinatorics -->
+            <div class="topic" data-topic="4">
+                <div class="topic-header" onclick="toggleTopic(4)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>4. Combinatorics: Counting Principles</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(4)">
+                </div>
+                <div class="topic-content" id="topic-4">
+                    <div class="subsection">
+                        <h3>Permutations and Combinations</h3>
+                        
+                        <div class="formula">
+                            <strong>Permutations (order matters):</strong><br>
+                            P(n, k) = n!/(n-k)!<br><br>
+                            
+                            <strong>Combinations (order doesn't matter):</strong><br>
+                            C(n, k) = n!/(k!(n-k)!)
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Key Identities:</strong><br>
+                            • C(n, k) = C(n, n-k)<br>
+                            • C(n, 0) = C(n, n) = 1<br>
+                            • C(n, k) = C(n-1, k-1) + C(n-1, k) (Pascal's Identity)
+                        </div>
+
+                        <h3>Stars and Bars</h3>
+                        <div class="formula">
+                            Distribute n identical objects into k distinct bins:<br>
+                            C(n + k - 1, k - 1) = C(n + k - 1, n)
+                        </div>
+
+                        <div class="example">
+                            <strong>Example:</strong> Arrangements of "MISSISSIPPI"<br>
+                            11!/(1! · 4! · 4! · 2!) = 34,650
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 5: Advanced Combinatorics -->
+            <div class="topic" data-topic="5">
+                <div class="topic-header" onclick="toggleTopic(5)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>5. Binomial Theorem & Inclusion-Exclusion</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(5)">
+                </div>
+                <div class="topic-content" id="topic-5">
+                    <div class="subsection">
+                        <h3>Binomial Theorem</h3>
+                        <div class="theorem">
+                            (x + y)ⁿ = Σ(k=0 to n) C(n,k) · xⁿ⁻ᵏ · yᵏ
+                        </div>
+
+                        <div class="formula">
+                            <strong>Special Cases:</strong><br>
+                            • Setting x = y = 1: 2ⁿ = Σ C(n,k)<br>
+                            • Setting x = 1, y = -1: 0 = Σ (-1)ᵏ · C(n,k)
+                        </div>
+
+                        <h3>Inclusion-Exclusion Principle</h3>
+                        <div class="formula">
+                            |A ∪ B| = |A| + |B| - |A ∩ B|<br><br>
+                            |A ∪ B ∪ C| = |A| + |B| + |C|<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;- |A ∩ B| - |A ∩ C| - |B ∩ C|<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;+ |A ∩ B ∩ C|
+                        </div>
+
+                        <h3>Pigeonhole Principle</h3>
+                        <div class="theorem">
+                            If n+1 objects are placed into n boxes,<br>
+                            at least one box contains at least 2 objects
+                        </div>
+
+                        <h3>Catalan Numbers</h3>
+                        <div class="formula">
+                            Cₙ = C(2n, n)/(n+1) = (2n)!/((n+1)! · n!)<br>
+                            First few: 1, 1, 2, 5, 14, 42, 132, 429...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 6: Probability -->
+            <div class="topic" data-topic="6">
+                <div class="topic-header" onclick="toggleTopic(6)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>6. Probability Theory</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(6)">
+                </div>
+                <div class="topic-content" id="topic-6">
+                    <div class="subsection">
+                        <h3>Probability Rules</h3>
+                        <div class="formula">
+                            P(A') = 1 - P(A)<br>
+                            P(A ∪ B) = P(A) + P(B) - P(A ∩ B)<br>
+                            P(A|B) = P(A ∩ B)/P(B)
+                        </div>
+
+                        <h3>Independence</h3>
+                        <div class="theorem">
+                            Events A and B are independent if:<br>
+                            P(A ∩ B) = P(A) · P(B)
+                        </div>
+
+                        <h3>Bayes' Theorem</h3>
+                        <div class="formula">
+                            P(A|B) = P(B|A) · P(A) / P(B)
+                        </div>
+
+                        <h3>Expected Value & Variance</h3>
+                        <div class="formula">
+                            E[X] = Σ x · P(X = x)<br>
+                            Var(X) = E[X²] - (E[X])²<br>
+                            σ(X) = √Var(X)
+                        </div>
+
+                        <div class="example">
+                            <strong>Common Distributions:</strong><br>
+                            • Binomial(n, p): E[X] = np, Var(X) = np(1-p)<br>
+                            • Geometric(p): E[X] = 1/p, Var(X) = (1-p)/p²<br>
+                            • Poisson(λ): E[X] = λ, Var(X) = λ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 7: Graph Theory -->
+            <div class="topic" data-topic="7">
+                <div class="topic-header" onclick="toggleTopic(7)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>7. Graph Theory Fundamentals</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(7)">
+                </div>
+                <div class="topic-content" id="topic-7">
+                    <div class="subsection">
+                        <h3>Handshake Theorem</h3>
+                        <div class="theorem">
+                            Σ deg(v) = 2|E|<br><br>
+                            <strong>Corollary:</strong> Every graph has an even number of odd-degree vertices
+                        </div>
+
+                        <h3>Special Graphs</h3>
+                        <ul>
+                            <li><strong>Complete Graph Kₙ:</strong> |E| = n(n-1)/2</li>
+                            <li><strong>Cycle Cₙ:</strong> |E| = n, all vertices have degree 2</li>
+                            <li><strong>Tree:</strong> |E| = |V| - 1, connected and acyclic</li>
+                        </ul>
+
+                        <h3>Euler Circuits</h3>
+                        <div class="theorem">
+                            A connected graph has an Euler circuit<br>
+                            ⟺ every vertex has even degree
+                        </div>
+
+                        <h3>Graph Isomorphism</h3>
+                        <div class="example">
+                            <strong>Graph Invariants:</strong><br>
+                            • Number of vertices and edges<br>
+                            • Degree sequence<br>
+                            • Number of cycles<br>
+                            • Chromatic number
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 8: Relations -->
+            <div class="topic" data-topic="8">
+                <div class="topic-header" onclick="toggleTopic(8)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>8. Relations and Partial Orders</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(8)">
+                </div>
+                <div class="topic-content" id="topic-8">
+                    <div class="subsection">
+                        <h3>Properties of Relations</h3>
+                        <ul>
+                            <li><strong>Reflexive:</strong> ∀a ∈ A, aRa</li>
+                            <li><strong>Symmetric:</strong> aRb ⟹ bRa</li>
+                            <li><strong>Antisymmetric:</strong> (aRb ∧ bRa) ⟹ a = b</li>
+                            <li><strong>Transitive:</strong> (aRb ∧ bRc) ⟹ aRc</li>
+                        </ul>
+
+                        <h3>Equivalence Relations</h3>
+                        <div class="theorem">
+                            Reflexive + Symmetric + Transitive<br><br>
+                            <strong>Equivalence Class:</strong> [a] = {b ∈ A : aRb}
+                        </div>
+
+                        <div class="example">
+                            <strong>Examples:</strong><br>
+                            • Equality (=)<br>
+                            • Congruence modulo n (≡ₙ)<br>
+                            • "Has same birthday as"
+                        </div>
+
+                        <h3>Partial Orders</h3>
+                        <div class="theorem">
+                            Reflexive + Antisymmetric + Transitive<br><br>
+                            <strong>Examples:</strong> ≤ on ℝ, ⊆ on P(A), | on ℕ
+                        </div>
+
+                        <h3>Closures</h3>
+                        <div class="formula">
+                            • Reflexive Closure: R ∪ {(a,a) : a ∈ A}<br>
+                            • Symmetric Closure: R ∪ {(b,a) : (a,b) ∈ R}<br>
+                            • Transitive Closure: R⁺ = R ∪ R² ∪ R³ ∪ ...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 9: Logic -->
+            <div class="topic" data-topic="9">
+                <div class="topic-header" onclick="toggleTopic(9)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>9. Propositional Logic</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(9)">
+                </div>
+                <div class="topic-content" id="topic-9">
+                    <div class="subsection">
+                        <h3>Logical Connectives</h3>
+                        <div class="formula">
+                            ¬p (NOT), p ∧ q (AND), p ∨ q (OR)<br>
+                            p → q (IMPLIES), p ↔ q (IFF)
+                        </div>
+
+                        <h3>Key Equivalences</h3>
+                        <div class="theorem">
+                            <strong>De Morgan's Laws:</strong><br>
+                            • ¬(p ∧ q) ≡ ¬p ∨ ¬q<br>
+                            • ¬(p ∨ q) ≡ ¬p ∧ ¬q<br><br>
+                            
+                            <strong>Conditional:</strong><br>
+                            • p → q ≡ ¬p ∨ q<br>
+                            • p → q ≡ ¬q → ¬p (contrapositive)
+                        </div>
+
+                        <h3>Quantifiers</h3>
+                        <div class="formula">
+                            ∀x P(x): "for all x, P(x)"<br>
+                            ∃x P(x): "there exists x such that P(x)"<br><br>
+                            
+                            <strong>Negation:</strong><br>
+                            ¬(∀x P(x)) ≡ ∃x ¬P(x)<br>
+                            ¬(∃x P(x)) ≡ ∀x ¬P(x)
+                        </div>
+
+                        <h3>Valid Arguments</h3>
+                        <ul>
+                            <li><strong>Modus Ponens:</strong> p, p → q ⊢ q</li>
+                            <li><strong>Modus Tollens:</strong> ¬q, p → q ⊢ ¬p</li>
+                            <li><strong>Hypothetical Syllogism:</strong> p → q, q → r ⊢ p → r</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 10: Proofs -->
+            <div class="topic" data-topic="10">
+                <div class="topic-header" onclick="toggleTopic(10)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>10. Proof Techniques</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(10)">
+                </div>
+                <div class="topic-content" id="topic-10">
+                    <div class="subsection">
+                        <h3>Direct Proof</h3>
+                        <div class="proof">
+                            To prove p → q:<br>
+                            1. Assume p is true<br>
+                            2. Use definitions and theorems<br>
+                            3. Derive q
+                        </div>
+
+                        <h3>Proof by Contrapositive</h3>
+                        <div class="proof">
+                            To prove p → q, instead prove ¬q → ¬p
+                        </div>
+
+                        <h3>Proof by Contradiction</h3>
+                        <div class="proof">
+                            To prove p:<br>
+                            1. Assume ¬p<br>
+                            2. Derive a contradiction<br>
+                            3. Conclude p must be true
+                        </div>
+
+                        <div class="example">
+                            <strong>Example:</strong> √2 is irrational<br>
+                            Assume √2 = a/b in lowest terms<br>
+                            Then 2b² = a², so a is even<br>
+                            Let a = 2k, then b² = 2k²<br>
+                            So b is even too - contradiction!
+                        </div>
+
+                        <h3>Proof by Cases</h3>
+                        <div class="proof">
+                            1. Show cases are exhaustive<br>
+                            2. Prove statement in each case
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 11: Induction -->
+            <div class="topic" data-topic="11">
+                <div class="topic-header" onclick="toggleTopic(11)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>11. Mathematical Induction</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(11)">
+                </div>
+                <div class="topic-content" id="topic-11">
+                    <div class="subsection">
+                        <h3>Principle of Induction</h3>
+                        <div class="proof">
+                            To prove P(n) for all n ≥ n₀:<br>
+                            1. <strong>Base Case:</strong> Prove P(n₀)<br>
+                            2. <strong>Inductive Step:</strong> Assume P(k), prove P(k+1)<br>
+                            3. <strong>Conclusion:</strong> By induction, P(n) holds for all n ≥ n₀
+                        </div>
+
+                        <div class="example">
+                            <strong>Example:</strong> Prove 1 + 2 + ... + n = n(n+1)/2<br><br>
+                            <em>Base case:</em> n = 1, LHS = 1, RHS = 1(2)/2 = 1 ✓<br><br>
+                            <em>Inductive step:</em> Assume true for k<br>
+                            1 + 2 + ... + k + (k+1) = k(k+1)/2 + (k+1)<br>
+                            = (k+1)(k+2)/2 ✓
+                        </div>
+
+                        <h3>Strong Induction</h3>
+                        <div class="theorem">
+                            Assume P(n₀), P(n₀+1), ..., P(k) all true<br>
+                            Then prove P(k+1)
+                        </div>
+
+                        <h3>Big-O Notation</h3>
+                        <div class="formula">
+                            f(n) = O(g(n)) if ∃c > 0, n₀ such that<br>
+                            |f(n)| ≤ c|g(n)| for all n ≥ n₀<br><br>
+                            
+                            <strong>Growth Rates:</strong><br>
+                            O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 12: Complexity -->
+            <div class="topic" data-topic="12">
+                <div class="topic-header" onclick="toggleTopic(12)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>12. Complexity & Computation</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(12)">
+                </div>
+                <div class="topic-content" id="topic-12">
+                    <div class="subsection">
+                        <h3>Algorithm Complexity</h3>
+                        <div class="example">
+                            <strong>Common Algorithms:</strong><br>
+                            • Linear Search: O(n)<br>
+                            • Binary Search: O(log n)<br>
+                            • Bubble Sort: O(n²)<br>
+                            • Merge Sort: O(n log n)<br>
+                            • Quick Sort: O(n log n) average, O(n²) worst
+                        </div>
+
+                        <h3>Master Theorem</h3>
+                        <div class="theorem">
+                            For T(n) = aT(n/b) + f(n):<br>
+                            1. If f(n) = O(n^(log_b(a) - ε)), then T(n) = Θ(n^log_b(a))<br>
+                            2. If f(n) = Θ(n^log_b(a)), then T(n) = Θ(n^log_b(a) · log n)<br>
+                            3. If f(n) = Ω(n^(log_b(a) + ε)), then T(n) = Θ(f(n))
+                        </div>
+
+                        <h3>Formal Languages</h3>
+                        <div class="formula">
+                            <strong>Alphabet Σ:</strong> Finite set of symbols<br>
+                            <strong>String:</strong> Finite sequence from Σ<br>
+                            <strong>Language:</strong> Set of strings L ⊆ Σ*
+                        </div>
+
+                        <h3>Grammars (Chomsky Hierarchy)</h3>
+                        <ul>
+                            <li><strong>Type 0:</strong> Unrestricted</li>
+                            <li><strong>Type 1:</strong> Context-Sensitive</li>
+                            <li><strong>Type 2:</strong> Context-Free</li>
+                            <li><strong>Type 3:</strong> Regular</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 13: Automata -->
+            <div class="topic" data-topic="13">
+                <div class="topic-header" onclick="toggleTopic(13)">
+                    <div class="topic-title">
+                        <span class="topic-icon">▶</span>
+                        <span>13. Automata & Regular Languages</span>
+                    </div>
+                    <input type="checkbox" class="checkbox" onclick="event.stopPropagation(); markComplete(13)">
+                </div>
+                <div class="topic-content" id="topic-13">
+                    <div class="subsection">
+                        <h3>Finite-State Automata</h3>
+                        <div class="formula">
+                            M = (Q, Σ, δ, q₀, F) where:<br>
+                            • Q: finite set of states<br>
+                            • Σ: input alphabet<br>
+                            • δ: transition function<br>
+                            • q₀: initial state<br>
+                            • F: accepting states
+                        </div>
+
+                        <h3>Regular Expressions</h3>
+                        <div class="example">
+                            <strong>Examples:</strong><br>
+                            • (0|1)*: all binary strings<br>
+                            • (0|1)*1: binary strings ending in 1<br>
+                            • (a|b)*abb: strings ending in "abb"
+                        </div>
+
+                        <h3>Pumping Lemma</h3>
+                        <div class="theorem">
+                            If L is regular, ∃p such that for any s ∈ L with |s| ≥ p,<br>
+                            we can write s = xyz where:<br>
+                            1. |xy| ≤ p<br>
+                            2. |y| > 0<br>
+                            3. xy^i z ∈ L for all i ≥ 0<br><br>
+                            <em>Use to prove languages are NOT regular</em>
+                        </div>
+
+                        <h3>Closure Properties</h3>
+                        <div class="formula">
+                            Regular languages are closed under:<br>
+                            • Union, intersection, complement<br>
+                            • Concatenation, Kleene star<br>
+                            • Reversal, homomorphism
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Load progress from localStorage
+        let completedTopics = JSON.parse(localStorage.getItem('completedTopics')) || [];
+        const totalTopics = 13;
+
+        // Initialize on page load
+        window.onload = function() {
+            loadProgress();
+            updateProgress();
+        };
+
+        function toggleTopic(topicNum) {
+            const content = document.getElementById(`topic-${topicNum}`);
+            const header = content.previousElementSibling;
+            
+            content.classList.toggle('active');
+            header.classList.toggle('active');
+        }
+
+        function markComplete(topicNum) {
+            const checkbox = event.target;
+            const header = checkbox.closest('.topic-header');
+            
+            if (checkbox.checked) {
+                if (!completedTopics.includes(topicNum)) {
+                    completedTopics.push(topicNum);
+                    header.classList.add('completed');
+                }
+            } else {
+                completedTopics = completedTopics.filter(t => t !== topicNum);
+                header.classList.remove('completed');
+            }
+            
+            saveProgress();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((completedTopics.length / totalTopics) * 100);
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '%';
+        }
+
+        function saveProgress() {
+            localStorage.setItem('completedTopics', JSON.stringify(completedTopics));
+        }
+
+        function loadProgress() {
+            completedTopics.forEach(topicNum => {
+                const checkbox = document.querySelector(`[data-topic="${topicNum}"] .checkbox`);
+                const header = document.querySelector(`[data-topic="${topicNum}"] .topic-header`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    header.classList.add('completed');
+                }
+            });
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                completedTopics = [];
+                localStorage.removeItem('completedTopics');
+                
+                document.querySelectorAll('.checkbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.topic-header').forEach(h => h.classList.remove('completed'));
+                
+                updateProgress();
+            }
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.topic-content').forEach(content => {
+                content.classList.add('active');
+                content.previousElementSibling.classList.add('active');
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.topic-content').forEach(content => {
+                content.classList.remove('active');
+                content.previousElementSibling.classList.remove('active');
+            });
+        }
+
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        searchBox.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                // Clear all highlights
+                document.querySelectorAll('.highlight').forEach(el => {
+                    const parent = el.parentNode;
+                    parent.replaceChild(document.createTextNode(el.textContent), el);
+                    parent.normalize();
+                });
+                return;
+            }
+
+            // Remove previous highlights
+            document.querySelectorAll('.highlight').forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.textContent), el);
+                parent.normalize();
+            });
+
+            // Search and highlight
+            document.querySelectorAll('.topic-content').forEach(content => {
+                const text = content.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    // Expand the topic
+                    content.classList.add('active');
+                    content.previousElementSibling.classList.add('active');
+                    
+                    // Highlight matches
+                    highlightText(content, searchTerm);
+                }
+            });
+        });
+
+        function highlightText(element, searchTerm) {
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            const nodesToReplace = [];
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue.toLowerCase().includes(searchTerm)) {
+                    nodesToReplace.push(node);
+                }
+            }
+
+            nodesToReplace.forEach(node => {
+                const parent = node.parentNode;
+                const text = node.nodeValue;
+                const lowerText = text.toLowerCase();
+                const index = lowerText.indexOf(searchTerm);
+                
+                if (index !== -1) {
+                    const before = text.substring(0, index);
+                    const match = text.substring(index, index + searchTerm.length);
+                    const after = text.substring(index + searchTerm.length);
+                    
+                    const fragment = document.createDocumentFragment();
+                    if (before) fragment.appendChild(document.createTextNode(before));
+                    
+                    const highlight = document.createElement('span');
+                    highlight.className = 'highlight';
+                    highlight.textContent = match;
+                    fragment.appendChild(highlight);
+                    
+                    if (after) fragment.appendChild(document.createTextNode(after));
+                    
+                    parent.replaceChild(fragment, node);
+                }
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchBox.focus();
+            }
+            // Ctrl/Cmd + E to expand all
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                expandAll();
+            }
+            // Ctrl/Cmd + W to collapse all
+            if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
+                e.preventDefault();
+                collapseAll();
+            }
+        });
+    </script>
+</body>
+</html>
